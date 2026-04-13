@@ -3,7 +3,7 @@ import type { Post } from '../types'
 type PostListProps = {
   posts: Post[]
   isLoading: boolean
-  activeRequest: 'idle' | 'fetch' | 'create' | 'update' | 'delete'
+  activeRequest: 'idle' | 'fetch' | 'search' | 'create' | 'update' | 'delete'
   editingPostId: number | null
   onDelete: (id: number) => Promise<void>
   onEdit: (post: Post) => void

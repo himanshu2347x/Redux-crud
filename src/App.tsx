@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+import type { FormEvent } from 'react'
 import { PostForm } from './features/post/components/PostForm'
 import { PostList } from './features/post/components/PostList'
 import {
   addPost,
   deletePost,
   fetchPosts,
+  searchPostById,
   selectPostState,
   updatePost,
 } from './features/post/postSlice'
@@ -15,6 +17,7 @@ function App() {
   const dispatch = useAppDispatch()
   const { items, status, error, activeRequest } = useAppSelector(selectPostState)
   const [editingPost, setEditingPost] = useState<Post | null>(null)
+  const [searchId, setSearchId] = useState('')
 
   useEffect(() => {
     if (status === 'idle') {
@@ -50,6 +53,25 @@ function App() {
     }
   }
 
+  const handleSearch = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const trimmedValue = searchId.trim()
+
+    if (!trimmedValue) {
+      await dispatch(fetchPosts()).unwrap()
+      return
+    }
+
+    const id = Number(trimmedValue)
+
+    if (!Number.isInteger(id) || id <= 0) {
+      return
+    }
+
+    await dispatch(searchPostById(id))
+  }
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#1e293b,_#020617_55%)] text-slate-50">
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8">
@@ -59,12 +81,7 @@ function App() {
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-5xl">
             Manage posts with real file updates through json-server
-          </h1>
-          <p className="mt-4 max-w-3xl text-sm leading-6 text-slate-300 sm:text-base">
-            This app now uses Redux Toolkit on the frontend and `json-server` on
-            port `3001`, so create, update, and delete requests persist to
-            `db.json` instead of only changing in-memory state.
-          </p>
+          </h1>   
         </header>
 
         <section className="grid gap-6 lg:grid-cols-[380px_minmax(0,1fr)]">
@@ -89,15 +106,38 @@ function App() {
                   </h2>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => void dispatch(fetchPosts())}
-                  className="rounded-full border border-cyan-400/40 bg-cyan-400/10 px-4 py-2 text-sm font-medium text-cyan-100 transition hover:border-cyan-300 hover:bg-cyan-400/20 disabled:cursor-not-allowed disabled:opacity-60"
-                  disabled={status === 'loading'}
+                <form
+                  className="flex flex-col gap-2 sm:w-[22rem] sm:flex-row"
+                  onSubmit={(event) => void handleSearch(event)}
                 >
-                  {status === 'loading' ? 'Refreshing...' : 'Refresh posts'}
-                </button>
+                  <input
+                    type="number"
+                    min="1"
+                    value={searchId}
+                    onChange={(event) => setSearchId(event.target.value)}
+                    placeholder="Search post by ID"
+                    className="w-full rounded-full border border-white/10 bg-slate-900/80 px-4 py-2 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300"
+                  />
+                  <button
+                    type="submit"
+                    className="rounded-full border border-cyan-400/40 bg-cyan-400/10 px-4 py-2 text-sm font-medium text-cyan-100 transition hover:border-cyan-300 hover:bg-cyan-400/20 disabled:cursor-not-allowed disabled:opacity-60"
+                    disabled={status === 'loading'}
+                  >
+                    {activeRequest === 'search' ? 'Searching...' : 'Search'}
+                  </button>
+                </form>
               </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchId('')
+                  void dispatch(fetchPosts())
+                }}
+                className="mt-4 text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
+              >
+                Show all posts
+              </button>
 
               {error ? (
                 <p className="mt-4 rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-100">

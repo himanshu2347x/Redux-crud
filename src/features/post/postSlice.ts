@@ -16,6 +16,18 @@ export const fetchPosts = createAsyncThunk('post/fetchPosts', async () => {
   return posts
 })
 
+export const searchPostById = createAsyncThunk(
+  'post/searchPostById',
+  async (id: number, { rejectWithValue }) => {
+    try {
+      const post = await postApi.getPostById(id)
+      return [post]
+    } catch {
+      return rejectWithValue(`Post with id ${id} was not found.`)
+    }
+  },
+)
+
 export const addPost = createAsyncThunk(
   'post/addPost',
   async (payload: PostFormValues) => {
@@ -59,6 +71,25 @@ const postSlice = createSlice({
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.error.message ?? 'Failed to fetch posts.'
+        state.activeRequest = 'idle'
+      })
+      .addCase(searchPostById.pending, (state) => {
+        state.status = 'loading'
+        state.error = null
+        state.activeRequest = 'search'
+      })
+      .addCase(searchPostById.fulfilled, (state, action: PayloadAction<Post[]>) => {
+        state.status = 'succeeded'
+        state.items = action.payload
+        state.activeRequest = 'idle'
+      })
+      .addCase(searchPostById.rejected, (state, action) => {
+        state.status = 'failed'
+        state.items = []
+        state.error =
+          typeof action.payload === 'string'
+            ? action.payload
+            : action.error.message ?? 'Failed to search post.'
         state.activeRequest = 'idle'
       })
       .addCase(addPost.pending, (state) => {

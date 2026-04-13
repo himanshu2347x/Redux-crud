@@ -19,6 +19,11 @@ export const postApi = {
     return response.data
   },
 
+  async getPostById(id: number) {
+    const response = await postsApi.get<Post>(`/posts/${id}`)
+    return response.data
+  },
+
   async createPost(payload: PostFormValues) {
     const response = await postsApi.post<Post>('/posts', payload)
     return response.data
