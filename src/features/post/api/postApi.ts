@@ -1,4 +1,5 @@
 import type { Post, PostFormValues } from '../types'
+import postSeedData from '../../../../utils/post.json'
 
 let postsCache: Post[] | null = null
 
@@ -9,14 +10,7 @@ async function ensurePostsLoaded(): Promise<Post[]> {
     return postsCache
   }
 
-  const response = await fetch('/post.json')
-
-  if (!response.ok) {
-    throw new Error('Failed to load local posts data.')
-  }
-
-  const data = (await response.json()) as Post[]
-  postsCache = data.map(clonePost)
+  postsCache = (postSeedData as Post[]).map(clonePost)
   return postsCache
 }
 
