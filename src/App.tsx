@@ -73,7 +73,7 @@ function App() {
   }
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#1e293b,_#020617_55%)] text-slate-50">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,#1e293b,#020617_55%)] text-slate-50">
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8">
         <header className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-slate-950/30 backdrop-blur">
           <p className="text-sm font-medium uppercase tracking-[0.3em] text-cyan-300">
