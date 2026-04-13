@@ -55,11 +55,16 @@ function App() {
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8">
         <header className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-slate-950/30 backdrop-blur">
           <p className="text-sm font-medium uppercase tracking-[0.3em] text-cyan-300">
-            Redux Toolkit CRUD
+            Redux Toolkit + json-server
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-5xl">
-            Manage JSONPlaceholder posts with a clean production-ready structure
+            Manage posts with real file updates through json-server
           </h1>
+          <p className="mt-4 max-w-3xl text-sm leading-6 text-slate-300 sm:text-base">
+            This app now uses Redux Toolkit on the frontend and `json-server` on
+            port `3001`, so create, update, and delete requests persist to
+            `db.json` instead of only changing in-memory state.
+          </p>
         </header>
 
         <section className="grid gap-6 lg:grid-cols-[380px_minmax(0,1fr)]">
@@ -72,7 +77,7 @@ function App() {
             onSubmit={handleCreateOrUpdate}
           />
 
-          <div className="space-y-4">
+          <div className="flex min-h-0 flex-col space-y-4 lg:max-h-[calc(100vh-10rem)]">
             <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-5 shadow-xl backdrop-blur">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
